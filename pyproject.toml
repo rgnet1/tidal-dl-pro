@@ -17,7 +17,7 @@ requires-python = ">=3.12,<3.14"
 dynamic = ["dependencies"]
 
 [project.urls]
-repository = "https://github.com/rgnet1/tidal-dl-pro"
+repository = "https://github.com/rgnet1/tidal-dl-ng"
 documentation = "https://exislow.github.io/tidal-dl-ng/"
 
 [project.scripts]

@@ -43,8 +43,8 @@ A browser UI for **Tidal DL Pro**: FastAPI backend, Alpine.js + Tailwind fronten
 
 ### 1. Clone and Run
 ```bash
-git clone https://github.com/rgnet1/tidal-dl-pro.git
-cd tidal-dl-pro
+git clone https://github.com/rgnet1/tidal-dl-ng.git
+cd tidal-dl-ng
 
 mkdir -p config downloads
 docker compose up -d --build

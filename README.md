@@ -1,8 +1,8 @@
 # ![](./tidal_dl_ng/ui/icon32.png) Tidal DL Pro
 
-[![Release](https://img.shields.io/github/v/release/rgnet1/tidal-dl-pro)](https://github.com/rgnet1/tidal-dl-pro/releases)
-[![Commit activity](https://img.shields.io/github/commit-activity/m/rgnet1/tidal-dl-pro)](https://github.com/rgnet1/tidal-dl-pro/graphs/commit-activity)
-[![License](https://img.shields.io/github/license/rgnet1/tidal-dl-pro)](https://github.com/rgnet1/tidal-dl-pro/blob/master/LICENSE)
+[![Release](https://img.shields.io/github/v/release/rgnet1/tidal-dl-ng)](https://github.com/rgnet1/tidal-dl-ng/releases)
+[![Commit activity](https://img.shields.io/github/commit-activity/m/rgnet1/tidal-dl-ng)](https://github.com/rgnet1/tidal-dl-ng/graphs/commit-activity)
+[![License](https://img.shields.io/github/license/rgnet1/tidal-dl-ng)](https://github.com/rgnet1/tidal-dl-ng/blob/master/LICENSE)
 
 **Tidal DL Pro** is a TIDAL downloader with a **browser web UI** (Docker) and the original **CLI / GUI** from [tidal-dl-ng](https://github.com/exislow/tidal-dl-ng). Multithreaded and multi-chunked downloads are supported.
 
@@ -37,6 +37,8 @@ docker run -d \
 ```
 
 Optional environment variables (same semantics as compose): `ACTIVE_ENGINE` (`tidal-dl-ng` or `tiddl`), `DOWNLOAD_PATH` if you override the download directory inside the container.
+
+**Renaming the GitHub repository** to `tidal-dl-pro` (to match the product name): run `gh repo rename tidal-dl-pro` from a clone with a token that has **admin** on the repo, then `git remote set-url origin git@github.com:rgnet1/tidal-dl-pro.git` and update badge URLs in this README to `rgnet1/tidal-dl-pro`.
 
 ⚠️ **Windows** Defender / **Anti Virus** software / web browser alerts, while you try to download the app binary: This is a **false positive**. Please read [this issue](https://github.com/exislow/tidal-dl-ng/issues/231), [PyInstaller (used by this project) statement](https://github.com/pyinstaller/pyinstaller/blob/develop/.github/ISSUE_TEMPLATE/antivirus.md) and [the alternative installation solution](https://github.com/exislow/tidal-dl-ng/?tab=readme-ov-file#-installation--upgrade).
 
