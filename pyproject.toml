@@ -2,7 +2,7 @@
 name = "tidal-dl-ng"
 authors = [{ name = "Robert Honz", email = "<cen.sored@gmail.com>" }]
 version = "0.33.0"
-description = "TIDAL Media Downloader Next Generation!"
+description = "Tidal DL Pro — TIDAL media downloader (web UI and CLI)."
 readme = "README.md"
 license = "AGPL-3.0-only"
 license-files = ["LICENSE"]
@@ -17,7 +17,7 @@ requires-python = ">=3.12,<3.14"
 dynamic = ["dependencies"]
 
 [project.urls]
-repository = "https://github.com/exislow/tidal-dl-ng"
+repository = "https://github.com/rgnet1/tidal-dl-pro"
 documentation = "https://exislow.github.io/tidal-dl-ng/"
 
 [project.scripts]

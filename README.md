@@ -1,11 +1,42 @@
-# ![](./tidal_dl_ng/ui/icon32.png) TIDAL Downloader Next Generation! (tidal-dl-ng)
+# ![](./tidal_dl_ng/ui/icon32.png) Tidal DL Pro
 
-[![Release](https://img.shields.io/github/v/release/exislow/tidal-dl-ng)](https://img.shields.io/github/v/release/exislow/tidal-dl-ng)
-[![Build status](https://img.shields.io/github/actions/workflow/status/exislow/tidal-dl-ng/release-or-test-build.yml)](https://github.com/exislow/tidal-dl-ng/actions/workflows/release-or-test-build.yml)
-[![Commit activity](https://img.shields.io/github/commit-activity/m/exislow/tidal-dl-ng)](https://img.shields.io/github/commit-activity/m/exislow/tidal-dl-ng)
-[![License](https://img.shields.io/github/license/exislow/tidal-dl-ng)](https://img.shields.io/github/license/exislow/tidal-dl-ng)
+[![Release](https://img.shields.io/github/v/release/rgnet1/tidal-dl-pro)](https://github.com/rgnet1/tidal-dl-pro/releases)
+[![Commit activity](https://img.shields.io/github/commit-activity/m/rgnet1/tidal-dl-pro)](https://github.com/rgnet1/tidal-dl-pro/graphs/commit-activity)
+[![License](https://img.shields.io/github/license/rgnet1/tidal-dl-pro)](https://github.com/rgnet1/tidal-dl-pro/blob/master/LICENSE)
 
-This tool allows you to download songs and videos from TIDAL. Multithreaded and multi-chunked downloads are supported.
+**Tidal DL Pro** is a TIDAL downloader with a **browser web UI** (Docker) and the original **CLI / GUI** from [tidal-dl-ng](https://github.com/exislow/tidal-dl-ng). Multithreaded and multi-chunked downloads are supported.
+
+## Docker (web UI)
+
+From the repository root (see `docker-compose.yml`):
+
+```bash
+mkdir -p config downloads
+docker compose up -d --build
+```
+
+Then open **http://localhost:8000** in a browser, sign in to TIDAL, and search or use your library.
+
+- **Logs:** `docker compose logs -f tidal-dl-pro-web`
+- **Stop:** `docker compose down`
+- **Data:** `./config` holds auth and settings; `./downloads` is the default download folder (both are bind mounts in compose).
+
+Equivalent **`docker run`** after building the image locally (`docker build -t tidal-dl-pro .`):
+
+```bash
+mkdir -p config downloads
+docker run -d \
+  --name tidal-dl-pro-web \
+  -p 8000:8000 \
+  -e PUID=1000 \
+  -e PGID=1000 \
+  -v "$(pwd)/config:/config" \
+  -v "$(pwd)/downloads:/downloads" \
+  --restart unless-stopped \
+  tidal-dl-pro
+```
+
+Optional environment variables (same semantics as compose): `ACTIVE_ENGINE` (`tidal-dl-ng` or `tiddl`), `DOWNLOAD_PATH` if you override the download directory inside the container.
 
 ⚠️ **Windows** Defender / **Anti Virus** software / web browser alerts, while you try to download the app binary: This is a **false positive**. Please read [this issue](https://github.com/exislow/tidal-dl-ng/issues/231), [PyInstaller (used by this project) statement](https://github.com/pyinstaller/pyinstaller/blob/develop/.github/ISSUE_TEMPLATE/antivirus.md) and [the alternative installation solution](https://github.com/exislow/tidal-dl-ng/?tab=readme-ov-file#-installation--upgrade).
 

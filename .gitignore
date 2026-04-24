@@ -17,6 +17,8 @@ build/
 develop-eggs/
 dist/
 downloads/
+# Local Docker / runtime credentials (never commit)
+config/
 eggs/
 .eggs/
 lib/
@@ -170,3 +172,4 @@ cython_debug/
 # Custom
 
 download/
+scripts/novnc/

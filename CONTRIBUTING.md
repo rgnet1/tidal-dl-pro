@@ -1,4 +1,4 @@
-# Contributing to `tidal-dl-ng`
+# Contributing to Tidal DL Pro (`tidal-dl-ng` package)
 
 Contributions are welcome, and they are greatly appreciated!
 Every little bit helps, and credit will always be given.
