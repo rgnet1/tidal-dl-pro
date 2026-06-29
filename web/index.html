@@ -1,10 +1,27 @@
 <!DOCTYPE html>
-<html lang="en" x-data="app()" x-init="init()" :class="{ 'dark': dark }" class="h-full">
+<html lang="en" class="h-full">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark light" />
   <title>Tidal DL Pro</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F%89%87%99</text></svg>" />
+  <script>
+    // Apply the dark class to <html> BEFORE paint so the body's own dark
+    // utilities resolve (Tailwind's class dark mode is descendant-based, so the
+    // toggle must live on an ancestor of every dark: utility, not on <body>).
+    (function () {
+      try {
+        var saved = localStorage.getItem('dark');
+        var isDark = saved !== null
+          ? saved === 'true'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.classList.toggle('dark', isDark);
+      } catch (e) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -55,10 +72,36 @@
     @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
     .fade-enter { animation: fadeUp 0.25s ease; }
     @keyframes fadeUp { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* Dark-mode form element overrides — browsers don't reliably inherit
+       Tailwind text-color classes into <input>, <select>, <textarea>.
+       These rules ensure text is always visible against dark backgrounds. */
+    .dark input,
+    .dark textarea,
+    .dark select {
+      color: #e2e8f0;         /* surface-200 */
+      color-scheme: dark;
+    }
+    .dark input::placeholder {
+      color: #64748b;         /* surface-500 */
+    }
+    .dark input:disabled,
+    .dark select:disabled,
+    .dark input[readonly],
+    .dark textarea[readonly] {
+      color: #94a3b8;         /* surface-400 */
+    }
+    .dark option {
+      background-color: #1e293b;  /* surface-800 */
+      color: #e2e8f0;             /* surface-200 */
+    }
   </style>
 </head>
 
-<body class="h-full bg-surface-50 dark:bg-surface-950 text-surface-800 dark:text-surface-200 antialiased">
+<body class="h-full bg-surface-50 dark:bg-surface-950 text-surface-800 dark:text-surface-200 antialiased"
+      x-data="app()"
+      x-init="init()"
+      x-effect="document.documentElement.classList.toggle('dark', dark)">
 
 <!-- LOGIN SCREEN -->
 <div x-show="!auth" x-cloak class="min-h-screen flex items-center justify-center p-4">
@@ -67,7 +110,7 @@
       <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-brand-600 text-white mb-4">
         <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
       </div>
-      <h1 class="text-3xl font-bold tracking-tight">Tidal DL Pro</h1>
+      <h1 class="text-3xl font-bold tracking-tight" x-text="appDisplayName">Tidal DL Pro</h1>
       <p class="text-surface-500 dark:text-surface-400 mt-2">TIDAL downloads for desktop &amp; LAN</p>
     </div>
 
@@ -77,7 +120,7 @@
       <template x-if="loginUrl">
         <div class="mb-4 p-3 bg-brand-50 dark:bg-brand-900/30 rounded-lg border border-brand-200 dark:border-brand-700">
           <p class="text-sm font-medium text-brand-700 dark:text-brand-300 mb-1">Open this link on any device:</p>
-          <a :href="loginUrl" target="_blank" class="text-sm text-brand-600 break-all hover:underline font-mono" x-text="loginUrl"></a>
+          <a :href="loginUrl" target="_blank" class="text-sm text-brand-600 dark:text-brand-400 break-all hover:underline font-mono" x-text="loginUrl"></a>
         </div>
       </template>
 
@@ -115,13 +158,13 @@
       <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white shrink-0">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
       </div>
-      <span class="font-bold text-base sm:text-lg leading-none truncate">Tidal DL Pro</span>
+      <span class="font-bold text-base sm:text-lg leading-none truncate" x-text="appDisplayName">Tidal DL Pro</span>
     </div>
     <div class="flex items-center gap-1 sm:gap-2 shrink-0">
       <button type="button" @click="mobileQueueOpen = true; mobileLibraryOpen = false" class="md:hidden p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition" title="Queue" aria-label="Open queue">
         <svg class="w-5 h-5 text-surface-600 dark:text-surface-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18v4H3V4zm0 8h18v4H3v-4zm0 8h10v4H3v-4z"/></svg>
       </button>
-      <button @click="dark = !dark; localStorage.setItem('dark', String(!dark))" class="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition" title="Toggle theme">
+      <button @click="dark = !dark; localStorage.setItem('dark', String(dark))" class="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition" title="Toggle theme">
         <svg x-show="!dark" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
         <svg x-show="dark" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
       </button>
@@ -171,7 +214,7 @@
           <div>
             <template x-if="library.playlists && library.playlists.length">
               <div class="mb-4">
-                <h3 class="text-[11px] font-bold text-surface-400 uppercase tracking-wider px-1 mb-1">Playlists</h3>
+                <h3 class="text-[11px] font-bold text-surface-400 dark:text-surface-300 uppercase tracking-wider px-1 mb-1">Playlists</h3>
                 <div class="space-y-0.5">
                   <template x-for="pl in library.playlists" :key="'pl-'+pl.id">
                     <button @click="selectLibraryItem(pl)"
@@ -188,7 +231,7 @@
 
             <template x-if="library.favorites && library.favorites.length">
               <div class="mb-4">
-                <h3 class="text-[11px] font-bold text-surface-400 uppercase tracking-wider px-1 mb-1">Favorites</h3>
+                <h3 class="text-[11px] font-bold text-surface-400 dark:text-surface-300 uppercase tracking-wider px-1 mb-1">Favorites</h3>
                 <div class="space-y-0.5">
                   <template x-for="fav in library.favorites" :key="'fav-'+fav.id">
                     <button @click="selectLibraryItem(fav)"
@@ -205,7 +248,7 @@
 
             <template x-if="library.mixes && library.mixes.length">
               <div>
-                <h3 class="text-[11px] font-bold text-surface-400 uppercase tracking-wider px-1 mb-1">Mixes</h3>
+                <h3 class="text-[11px] font-bold text-surface-400 dark:text-surface-300 uppercase tracking-wider px-1 mb-1">Mixes</h3>
                 <div class="space-y-0.5">
                   <template x-for="mx in library.mixes" :key="'mx-'+mx.id">
                     <button @click="selectLibraryItem(mx)"
@@ -452,41 +495,41 @@
           </div>
           <div class="space-y-2">
             <div>
-              <label class="block text-xs text-surface-400 mb-1">Track</label>
+              <label class="block text-xs text-surface-400 dark:text-surface-300 mb-1">Track</label>
               <input type="text" x-model="cfg.path_template_track" @focus="pathTemplateTarget='path_template_track'"
                      @dragover.prevent @drop.prevent="dropPathToken($event, 'path_template_track')"
                      class="w-full px-3 py-2 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500 transition"/>
             </div>
             <div>
-              <label class="block text-xs text-surface-400 mb-1">Album</label>
+              <label class="block text-xs text-surface-400 dark:text-surface-300 mb-1">Album</label>
               <input type="text" x-model="cfg.path_template_album" @focus="pathTemplateTarget='path_template_album'"
                      @dragover.prevent @drop.prevent="dropPathToken($event, 'path_template_album')"
                      :disabled="cfg.use_single_path_template"
                      class="w-full px-3 py-2 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500 transition"/>
             </div>
             <div>
-              <label class="block text-xs text-surface-400 mb-1">Playlist</label>
+              <label class="block text-xs text-surface-400 dark:text-surface-300 mb-1">Playlist</label>
               <input type="text" x-model="cfg.path_template_playlist" @focus="pathTemplateTarget='path_template_playlist'"
                      @dragover.prevent @drop.prevent="dropPathToken($event, 'path_template_playlist')"
                      :disabled="cfg.use_single_path_template"
                      class="w-full px-3 py-2 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500 transition"/>
             </div>
             <div>
-              <label class="block text-xs text-surface-400 mb-1">Mix</label>
+              <label class="block text-xs text-surface-400 dark:text-surface-300 mb-1">Mix</label>
               <input type="text" x-model="cfg.path_template_mix" @focus="pathTemplateTarget='path_template_mix'"
                      @dragover.prevent @drop.prevent="dropPathToken($event, 'path_template_mix')"
                      :disabled="cfg.use_single_path_template"
                      class="w-full px-3 py-2 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500 transition"/>
             </div>
             <div>
-              <label class="block text-xs text-surface-400 mb-1">Video</label>
+              <label class="block text-xs text-surface-400 dark:text-surface-300 mb-1">Video</label>
               <input type="text" x-model="cfg.path_template_video" @focus="pathTemplateTarget='path_template_video'"
                      @dragover.prevent @drop.prevent="dropPathToken($event, 'path_template_video')"
                      :disabled="cfg.use_single_path_template"
                      class="w-full px-3 py-2 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500 transition"/>
             </div>
           </div>
-          <p class="text-xs text-surface-400 dark:text-surface-500">Click or drag tokens into a field. Example: <code class="text-xs">{Artist}/{Album}/{Track}</code></p>
+          <p class="text-xs text-surface-400 dark:text-surface-300">Click or drag tokens into a field. Example: <code class="text-xs">{Artist}/{Album}/{Track}</code></p>
         </div>
       </div>
       <div>
@@ -496,7 +539,7 @@
           <option value="tidal-dl-ng">Tidal DL Pro engine (default)</option>
           <option value="tiddl">tiddl (experimental)</option>
         </select>
-        <p class="text-xs text-surface-400 dark:text-surface-500 mt-1">Library + downloads use the selected engine. Credentials stay in sync in <code class="text-xs">/config</code>.</p>
+        <p class="text-xs text-surface-400 dark:text-surface-300 mt-1">Library + downloads use the selected engine. Credentials stay in sync in <code class="text-xs">/config</code>.</p>
       </div>
       <div>
         <label class="block text-sm font-medium mb-1.5 text-surface-600 dark:text-surface-300">Audio Quality</label>
@@ -530,7 +573,7 @@
         <label class="flex items-center justify-between gap-3">
           <span class="text-sm text-surface-600 dark:text-surface-300">
             Concurrent downloads
-            <span class="block text-xs text-surface-400 dark:text-surface-500">Parallel tracks (1–5). Higher = faster, but risks TIDAL rate limits.</span>
+            <span class="block text-xs text-surface-400 dark:text-surface-300">Parallel tracks (1–5). Higher = faster, but risks TIDAL rate limits.</span>
           </span>
           <input type="number" min="1" max="5" step="1" x-model.number="cfg.downloads_concurrent_max"
                  class="w-20 px-2 py-1 rounded-lg border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm text-right focus:outline-none focus:ring-2 focus:ring-brand-500 transition"/>
@@ -562,7 +605,7 @@
       </div>
     </div>
     <div class="flex justify-end gap-2 px-6 py-4 bg-surface-50 dark:bg-surface-800/50 border-t border-surface-200 dark:border-surface-700">
-      <button @click="showSettings = false" class="px-4 py-2 text-sm rounded-xl border border-surface-200 dark:border-surface-600 hover:bg-surface-100 dark:hover:bg-surface-700 transition font-medium">Cancel</button>
+      <button @click="showSettings = false" class="px-4 py-2 text-sm rounded-xl border border-surface-200 dark:border-surface-600 hover:bg-surface-100 dark:hover:bg-surface-700 text-surface-700 dark:text-surface-200 transition font-medium">Cancel</button>
       <button @click="saveSettings()" class="px-4 py-2 text-sm bg-brand-600 hover:bg-brand-700 text-white rounded-xl transition font-medium">Save</button>
     </div>
   </div>
@@ -585,6 +628,8 @@
 <script>
 function app() {
   return {
+    /** Shown in the web UI header, login title, and browser tab (see init). */
+    appDisplayName: 'Tidal DL Pro',
     auth: false,
     dark: true,
     q: '',
@@ -648,15 +693,31 @@ function app() {
     renderBatchSize: 1,
 
     async init() {
-      const saved = localStorage.getItem('dark');
-      if (saved !== null) { this.dark = saved === 'true'; }
-      else { this.dark = window.matchMedia('(prefers-color-scheme: dark)').matches; }
-      await this.checkAuth();
-      if (this.auth) {
-        await this.fetchLibrary();
-        await this.fetchSettings();
+      if (typeof document !== 'undefined') {
+        document.title = this.appDisplayName;
       }
-      this.connectWs();
+      const saved = localStorage.getItem('dark');
+      if (saved !== null) {
+        this.dark = saved === 'true';
+      } else {
+        this.dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+      try {
+        await this.checkAuth();
+        if (this.auth) {
+          await this.fetchLibrary();
+          await this.fetchSettings();
+        }
+      } catch (e) {
+        console.error('init failed', e);
+        this.toast(e && e.message ? String(e.message) : 'Startup failed', 'error');
+      } finally {
+        try {
+          this.connectWs();
+        } catch (e) {
+          console.error('WebSocket setup failed', e);
+        }
+      }
       if (typeof window !== 'undefined') {
         var self = this;
         window.addEventListener('resize', function() {
@@ -668,14 +729,25 @@ function app() {
     },
 
     async api(method, path, body) {
-      const opts = { method, headers: {} };
+      const ctrl = new AbortController();
+      const timeoutMs = 45000;
+      const timer = setTimeout(function() {
+        ctrl.abort();
+      }, timeoutMs);
+      const opts = { method, headers: {}, signal: ctrl.signal };
       if (body) {
         opts.headers['Content-Type'] = 'application/json';
         opts.body = JSON.stringify(body);
       }
-      const r = await fetch(path, opts);
-      if (!r.ok) throw new Error(r.status + ' ' + r.statusText);
-      return r.json();
+      try {
+        const r = await fetch(path, opts);
+        if (!r.ok) {
+          throw new Error(r.status + ' ' + r.statusText);
+        }
+        return await r.json();
+      } finally {
+        clearTimeout(timer);
+      }
     },
 
     async checkAuth() {

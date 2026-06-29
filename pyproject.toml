@@ -1,7 +1,7 @@
 [project]
 name = "tidal-dl-ng"
-authors = [{ name = "Robert Honz", email = "<cen.sored@gmail.com>" }]
-version = "0.33.0"
+authors = [{ name = "test", email = "<sample@gmail.com>" }]
+version = "2.0.0"
 description = "Tidal DL Pro — TIDAL media downloader (web UI and CLI)."
 readme = "README.md"
 license = "AGPL-3.0-only"
@@ -17,7 +17,7 @@ requires-python = ">=3.12,<3.14"
 dynamic = ["dependencies"]
 
 [project.urls]
-repository = "https://github.com/rgnet1/tidal-dl-ng"
+repository = "https://github.com/rgnet1/tidal-dl-pro"
 documentation = "https://exislow.github.io/tidal-dl-ng/"
 
 [project.scripts]
@@ -41,7 +41,7 @@ pyqtdarktheme-fork = { version = "^2.3.4", optional = true }
 rich = "^14.2.0"
 toml = "^0.10.2"
 typer = "^0.20.0"
-tidalapi = "^0.8.10"
+tidalapi = "^0.8.11"
 python-ffmpeg = "^2.0.12"
 pycryptodome = "^3.23.0"
 ansi2html = "^1.9.2"

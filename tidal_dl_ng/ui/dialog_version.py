@@ -140,7 +140,7 @@ class Ui_DialogVersion:
 
     def retranslateUi(self, DialogVersion):
         DialogVersion.setWindowTitle(QCoreApplication.translate("DialogVersion", "Version", None))
-        self.l_name_app.setText(QCoreApplication.translate("DialogVersion", "TIDAL Downloader Next Generation!", None))
+        self.l_name_app.setText(QCoreApplication.translate("DialogVersion", "Tidal DL Pro", None))
         self.l_h_version.setText(QCoreApplication.translate("DialogVersion", "Installed Version:", None))
         self.l_version.setText(QCoreApplication.translate("DialogVersion", "v1.2.3", None))
         self.l_error.setText(QCoreApplication.translate("DialogVersion", "ERROR", None))
@@ -153,7 +153,7 @@ class Ui_DialogVersion:
         self.l_url_github.setText(
             QCoreApplication.translate(
                 "DialogVersion",
-                '<a href="https://github.com/exislow/tidal-dl-ng/">https://github.com/exislow/tidal-dl-ng/</a>',
+                '<a href="https://github.com/rgnet1/tidal-dl-pro/">https://github.com/rgnet1/tidal-dl-pro/</a>',
                 None,
             )
         )

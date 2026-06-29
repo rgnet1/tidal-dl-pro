@@ -8,7 +8,7 @@
 #    nuitka-project: --linux-icon=tidal_dl_ng/ui/icon512.png
 # nuitka-project-if: {OS} in ("Windows"):
 #    nuitka-project: --windows-icon-from-ico=tidal_dl_ng/ui/icon.ico
-#    nuitka-project: --file-description="TIDAL media downloader next generation."
+#    nuitka-project: --file-description="Tidal DL Pro — TIDAL media downloader."
 
 # Debugging options, controlled via environment variable at compile time.
 # nuitka-project-if: {OS} == "Windows" and os.getenv("DEBUG_COMPILATION", "no") == "yes":
@@ -112,7 +112,7 @@ from tidal_dl_ng.worker import Worker
 
 # TODO: Make more use of Exceptions
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
-    """Main application window for TIDAL Downloader Next Generation.
+    """Main application window for Tidal DL Pro.
 
     Handles GUI setup, user interactions, and download logic.
     """
@@ -159,7 +159,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         super().__init__()
         self.setupUi(self)
-        self.setWindowTitle("TIDAL Downloader Next Generation!")
+        self.setWindowTitle("Tidal DL Pro")
 
         # Logging redirect.
         XStream.stdout().messageWritten.connect(self._log_output)

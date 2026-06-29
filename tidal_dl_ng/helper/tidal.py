@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from typing import Any
 
 from tidalapi import Album, Mix, Playlist, Session, Track, UserPlaylist, Video
 from tidalapi.artist import Artist, Role
@@ -106,30 +107,57 @@ def url_ending_clean(url: str) -> str:
     return url[:-2] if url.endswith("/u") or url.endswith("?u") else url
 
 
-def search_results_all(session: Session, needle: str, types_media: SearchTypes = None) -> dict[str, [SearchTypes]]:
+def search_results_all(session: Session, needle: str, types_media: SearchTypes = None) -> dict[str, Any]:
+    """Aggregate every page of a TIDAL search into a single result dict.
+
+    ``session.search`` returns a dict whose list-valued keys (``tracks``,
+    ``albums``, ``artists``, ``videos``, ``playlists``) hold paginated media,
+    while ``top_hit`` holds a *single* media object (or ``None``). Accumulating
+    pages must therefore only concatenate the list-valued keys; the previous
+    implementation blindly ran ``result[key] += value`` for every key, which
+    raised ``TypeError: unsupported operand type(s) for +=: 'Track' and 'Track'``
+    whenever a later page still carried a ``top_hit`` object, intermittently
+    breaking search.
+
+    Args:
+        session (Session): Authenticated TIDAL session.
+        needle (str): Search query string.
+        types_media (SearchTypes, optional): List of tidalapi model classes to
+            restrict the search to. Defaults to ``None`` (all types).
+
+    Returns:
+        dict[str, Any]: Merged search results. List-valued keys contain all
+        pages concatenated; single-object keys (e.g. ``top_hit``) reflect the
+        first page only.
+    """
     limit: int = 300
     offset: int = 0
-    done: bool = False
-    result: dict[str, [SearchTypes]] = {}
+    result: dict[str, Any] = {}
 
-    while not done:
-        tmp_result: dict[str, [SearchTypes]] = session.search(
-            query=needle, models=types_media, limit=limit, offset=offset
-        )
-        tmp_done: bool = True
+    while True:
+        page: dict[str, Any] = session.search(query=needle, models=types_media, limit=limit, offset=offset)
+        has_more: bool = False
 
-        for key, value in tmp_result.items():
-            # Append pagination results, if there are any
-            if offset == 0:
-                result = tmp_result
-                tmp_done = False
-            elif bool(value):
-                result[key] += value
-                tmp_done = False
+        for key, value in page.items():
+            if isinstance(value, list):
+                # List-valued keys (tracks, albums, ...) are paginated and concatenated.
+                if offset == 0:
+                    result[key] = list(value)
+                else:
+                    result.setdefault(key, [])
+                    result[key] += value
 
-        # Next page
+                # Only keep paging while at least one list keeps yielding items.
+                if value:
+                    has_more = True
+            elif offset == 0:
+                # Single-object keys (e.g. top_hit) only make sense on the first page.
+                result[key] = value
+
+        if not has_more:
+            break
+
         offset += limit
-        done = tmp_done
 
     return result
 

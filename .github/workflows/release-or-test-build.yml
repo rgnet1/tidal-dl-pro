@@ -8,12 +8,7 @@ defaults:
     shell: bash
 
 on:
-  #  release:
-  #    types: [published]
-  #    branches: [master]
   push:
-    tags:
-      - "v*.*.*"
     branches:
       - "test-build"
 

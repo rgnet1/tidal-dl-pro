@@ -307,6 +307,9 @@ class TdlngEngine(Engine):
             return {"results": [media_to_item(media)] if media else []}
         results = search_results_all(self.tidal.session, query, [st])
         items: list[dict[str, Any]] = []
+        # ``top_hit`` repeats an entry that also appears in its list bucket, so
+        # track seen ids to avoid surfacing the same media twice.
+        seen_ids: set[str] = set()
         for _, group in results.items():
             # tidalapi may return either a list of media objects or a single
             # media object per group depending on version/response shape.
@@ -316,7 +319,13 @@ class TdlngEngine(Engine):
                     continue
                 if hasattr(m, "available") and not m.available:
                     continue
-                items.append(media_to_item(m))
+                item = media_to_item(m)
+                item_id = item.get("id")
+                if item_id and item_id in seen_ids:
+                    continue
+                if item_id:
+                    seen_ids.add(item_id)
+                items.append(item)
         return {"results": items}
 
     def resolve_media(self, media_id: str, media_type: str) -> dict[str, Any] | None:

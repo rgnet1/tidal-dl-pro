@@ -8,6 +8,26 @@
 
 ## Docker (web UI)
 
+### Run a published release
+
+The release image is published to GitHub Container Registry and Docker Hub. By default, the release compose file tracks `latest` from GHCR:
+
+```bash
+mkdir -p config downloads
+docker compose -f docker-compose.release.yml up -d
+```
+
+Pin a specific version when you want reproducible deploys:
+
+```bash
+APP_IMAGE=ghcr.io/rgnet1/tidal-dl-pro:1.0.0 docker compose -f docker-compose.release.yml up -d
+APP_IMAGE=<dockerhub-user>/tidal-dl-pro:1.0.0 docker compose -f docker-compose.release.yml up -d
+```
+
+The release workflow publishes `latest`, `1.0.0`, `1.0`, and `1` tags. Configure repository secrets `DOCKER_USERNAME` and `DOCKER_PASSWORD`, then run the **Release containers** workflow with version `1.0.0` or push tag `v1.0.0`.
+
+### Build locally
+
 From the repository root (see `docker-compose.yml`):
 
 ```bash
